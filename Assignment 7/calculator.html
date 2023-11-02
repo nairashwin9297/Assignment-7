@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - VocaVerse</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link href="styles/login.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div
+      class="d-flex justify-content-center align-items-center login-card-container"
+    >
+      <div class="background-image"></div>
+      <div class="card" style="width: 50rem">
+        <div class="card-body">
+          <button
+            type="button"
+            id="backButton"
+            class="btn-close"
+            aria-label="Close"
+            onclick="closeScreen()"
+          ></button>
+          <h2 class="card-title text-center mb-5">Calculator</h2>
+          <div class="row mt-4">
+            <div class="col-md-4">
+              <label for="number1">Number 1:</label>
+              <input type="text" class="form-control" id="number1" />
+              <div
+                class="alert alert-danger mt-2"
+                id="error1"
+                style="display: none"
+              ></div>
+            </div>
+            <div class="col-md-4">
+              <label for="number2">Number 2:</label>
+              <input type="text" class="form-control" id="number2" />
+              <div
+                class="alert alert-danger mt-2"
+                id="error2"
+                style="display: none"
+              ></div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <button class="btn btn-primary" id="add">Add</button>
+              <button class="btn btn-primary" id="subtract">Subtract</button>
+              <button class="btn btn-primary" id="multiply">Multiply</button>
+              <button class="btn btn-primary" id="divide">Divide</button>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-4">
+              <label for="result">Result:</label>
+              <input type="text" class="form-control" id="result" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/554d859931.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(() => {
+        const calculator = (event) => {
+          const buttonId = event.target.id;
+
+          // Get the values from the input fields
+          const num1 = $("#number1").val();
+          const num2 = $("#number2").val();
+
+          // Clear any previous errors
+          $("#error1").hide();
+          $("#error2").hide();
+
+          // Validate input
+          const isValidNumber = (value, errorElement) => {
+            if (value === "") {
+              errorElement.text("Value cannot be empty");
+              errorElement.show();
+              return false;
+            } else if (!/^\d*\.?\d+$/.test(value)) {
+              errorElement.text("Invalid number");
+              errorElement.show();
+              return false;
+            } else {
+              return true;
+            }
+          };
+
+          if (
+            !isValidNumber(num1, $("#error1")) ||
+            !isValidNumber(num2, $("#error2"))
+          ) {
+            return;
+          }
+
+          const value1 = parseFloat(num1);
+          const value2 = parseFloat(num2);
+
+          let result;
+          if (buttonId === "add") {
+            result = value1 + value2;
+          } else if (buttonId === "subtract") {
+            result = value1 - value2;
+          } else if (buttonId === "multiply") {
+            result = value1 * value2;
+          } else if (buttonId === "divide") {
+            if (value2 === 0) {
+              $("#error2").text("Cannot divide by zero");
+              $("#error2").show();
+              return;
+            }
+            result = value1 / value2;
+          }
+
+          // Update the result in the input field with the ID "result"
+          $("#result").val(result);
+        };
+
+        $("#add, #subtract, #multiply, #divide").on("click", calculator);
+      });
+    </script>
+  </body>
+</html>

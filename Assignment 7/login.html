@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - VocaVerse</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link href="styles/login.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div
+      class="d-flex justify-content-center align-items-center login-card-container"
+    >
+      <div class="background-image"></div>
+      <div class="card" style="width: 30rem">
+        <div class="card-body">
+          <button
+            type="button"
+            id="backButton"
+            class="btn-close"
+            aria-label="Close"
+            onclick="closeScreen()"
+          ></button>
+          <h2 class="card-title text-center mb-5">Login</h2>
+          <input
+            type="text"
+            class="form-control mb-4"
+            placeholder="Email ID"
+            id="email"
+          />
+          <div
+            class="alert alert-danger mb-3 small alert-height"
+            role="alert"
+            id="error_email"
+            style="display: none"
+          ></div>
+          <input
+            type="text"
+            class="form-control mb-4"
+            placeholder="Username"
+            id="username"
+          />
+          <div
+            class="alert alert-danger mb-3 small alert-height"
+            role="alert"
+            id="error_username"
+            style="display: none"
+          ></div>
+
+          <input
+            type="password"
+            class="form-control mb-4 text-sm"
+            placeholder="Password"
+            id="password"
+          />
+          <div
+            class="alert alert-danger mb-3 small"
+            role="alert"
+            id="error_password"
+            style="display: none"
+          ></div>
+
+          <input
+            type="password"
+            class="form-control mb-4"
+            placeholder="Confirm password"
+            id="confirm_password"
+          />
+          <div
+            class="alert alert-danger mb-3 small alert-height"
+            role="alert"
+            id="error_confirm_password"
+            style="display: none"
+          ></div>
+
+          <button id="login" type="button" class="btn btn-primary w-100">
+            <span
+              id="spinner"
+              class="spinner-border spinner-border-sm"
+              aria-hidden="true"
+              style="display: none"
+            ></span>
+            Login 
+          </button>
+          <!-- <button type="button" class="btn btn-primary" id="liveToastBtn">
+          Show live toast
+        </button> -->
+
+          <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div
+              id="liveToast"
+              class="toast bg-success text-white"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div class="toast-header">
+                <strong class="me-auto">Success!</strong>
+                <small>Just now</small>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="toast-body">You have successfully logged in.</div>
+            </div>
+          </div>
+          <div class="row mb-2 mt-3">
+            <div class="col-5">
+              <hr />
+            </div>
+            <div class="col-2 text-center">OR</div>
+            <div class="col-5">
+              <hr />
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <a href="#" class="btn btn-google btn-shadow w-100">
+                <i class="fa-brands fa-google"></i>
+                Sign in with Google
+              </a>
+            </div>
+            <div class="col-md-6">
+              <a href="#" class="btn btn-facebook btn-shadow w-100">
+                <i class="fa-brands fa-facebook-f"></i>
+                Sign in with Facebook
+              </a>
+            </div>
+          </div>
+
+          <!-- <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="card-link">Card link</a>
+          <a href="#" class="card-link">Another link</a> -->
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/554d859931.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  
+    <script>
+      $(document).ready(function () {
+        // Define global error variables
+        let error_email = true;
+        let error_username = true;
+        let error_password = true;
+        let error_confirm_password = true;
+    
+        // Handle input events for the form fields to trigger validation
+        $("#email").on("input", validateEmail);
+        $("#username").on("input", validateUsername);
+        $("#password").on("input", validatePassword);
+        $("#confirm_password").on("input", validateConfirmPassword);
+    
+        function validateEmail() {
+          let emailID = $("#email").val();
+          var emailPattern = /^[a-zA-Z0-9._-]+@northeastern\.edu$/; // Only northeastern email IDs allowed
+          let error_email_text = $("#error_email");
+          error_email_text.text(""); // Clear previous error messages
+    
+          // Validation logic for email
+          if (!emailID) {
+            error_email_text.text("Please enter an email ID!");
+            error_email = true;
+          } else if (!emailID.match(emailPattern)) {
+            error_email_text.text("Please enter a valid northeastern email ID!");
+            error_email_text.append("<br>Valid format is: yourname@northeastern.edu");
+            error_email = true;
+          } else if (emailID.length < 4 || emailID.length > 50) {
+            error_email_text.text("Email ID must be between 4 and 50 characters.");
+            error_email = true;
+          } else if (!/^[a-zA-Z0-9@._-]+$/.test(emailID)) {
+            error_email_text.text("Email can only contain letters, numbers, and special characters: @ . - _");
+            error_email_text.append("<br>Valid characters include: letters, numbers, @, ., -, and _");
+            error_email = true;
+          } else {
+            error_email = false;
+          }
+    
+          displayError(error_email_text, error_email);
+          logincheck();
+        }
+    
+        function validateUsername() {
+          let username = $("#username").val();
+          var usernameRegex = /^[a-zA-Z0-9_-]+$/;
+          let error_username_text = $("#error_username");
+          error_username_text.text(""); // Clear previous error messages
+    
+          // Validation logic for username
+          if (!username) {
+            error_username_text.text("Please enter a Username!");
+            error_username = true;
+          } else if (!username.match(usernameRegex)) {
+            error_username_text.text("Please enter a valid username!");
+            error_username_text.append("<br>Valid characters include: letters, numbers, - and _");
+            error_username = true;
+          } else if (username.length < 4 || username.length > 20) {
+            error_username_text.text("Username must be between 4 and 20 characters.");
+            error_username = true;
+          } else if (/[!@#\$%^&*()_+=.-]/.test(username)) {
+            error_username_text.text("Username cannot contain special characters: ! @ # $ % ^ & * ( ) + = . - _");
+            error_username_text.append("<br>Valid characters include: letters, numbers, - and _");
+            error_username = true;
+          } else {
+            error_username = false;
+          }
+    
+          displayError(error_username_text, error_username);
+          logincheck();
+        }
+    
+        function validatePassword() {
+          let password = $("#password").val();
+          let error_password_text = $("#error_password");
+          error_password_text.text(""); // Clear previous error messages
+    
+          // Validation logic for password
+          if (!password) {
+            error_password_text.text("Please enter a password!");
+            error_password = true;
+          } else if (password.length < 4 || password.length > 20) {
+            error_password_text.text("Password must be between 4 and 20 characters.");
+            error_password = true;
+          } else if (!/^[a-zA-Z0-9!@#\$%^&*()_+=.-]+$/.test(password)) {
+            error_password_text.text("Password can only contain letters, numbers, and special characters: ! @ # $ % ^ & * ( ) _ + = . -");
+            error_password_text.append("<br>Valid characters include: letters, numbers, and ! @ # $ % ^ & * ( ) _ + = . -");
+            error_password = true;
+          } else {
+            error_password = false;
+          }
+    
+          displayError(error_password_text, error_password);
+          logincheck();
+        }
+    
+        function validateConfirmPassword() {
+          let password = $("#password").val();
+          let confirm_password = $("#confirm_password").val();
+          let error_confirm_password_text = $("#error_confirm_password");
+          error_confirm_password_text.text(""); // Clear previous error messages
+    
+          // Validation logic for confirm password
+          if (!confirm_password) {
+            error_confirm_password_text.text("Please enter a password again!");
+            error_confirm_password = true;
+          } else if (confirm_password.length < 4 || confirm_password.length > 20) {
+            error_confirm_password_text.text("Confirmation password must be between 4 and 20 characters.");
+            error_confirm_password = true;
+          } else if (!/^[a-zA-Z0-9!@#\$%^&*()_+=.-]+$/.test(confirm_password)) {
+            error_confirm_password_text.text("Password can only contain letters, numbers, and special characters: ! @ # $ % ^ & * ( ) _ + = . -");
+            error_confirm_password_text.append("<br>Valid characters include: letters, numbers, and ! @ # $ % ^ & * ( ) _ + = . -");
+            error_confirm_password = true;
+          } else if (password !== confirm_password) {
+            error_confirm_password_text.text("Passwords do not match");
+            error_confirm_password = true;
+          } else {
+            error_confirm_password = false;
+          }
+    
+          displayError(error_confirm_password_text, error_confirm_password);
+          logincheck();
+        }
+    
+        function displayError(element, error) {
+          if (error) {
+            element.show();
+          } else {
+            element.hide();
+          }
+        }
+    
+        function logincheck() {
+          if (!error_email && !error_password && !error_username && !error_confirm_password) {
+            // If all fields are valid, enable the "Login" button
+            $("#login").prop("disabled", false);
+          } else {
+            // If any field is invalid, disable the "Login" button
+            $("#login").prop("disabled", true);
+          }
+        }
+    
+        // Disable the "Login" button initially
+        $("#login").prop("disabled", true);
+    
+        $("#login").on("click", function () {
+          // Check if all fields are valid before navigating
+          if (!error_email && !error_password && !error_username && !error_confirm_password) {
+            // Navigate to calculator.html
+            window.location.href = "calculator.html";
+          }
+        });
+      })
+    </script>
+    
+
+  </body>
+</html>
